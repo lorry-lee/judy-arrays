@@ -64,9 +64,9 @@ typedef unsigned int uint;
 	defined(__sparc64__) || \
 	defined(__arch64__) || \
 	defined(__powerpc64__) || \
-	defined (__s390x__) 
+	defined (__s390x__)
 	//	defines for 64 bit
-	
+
 	typedef unsigned long long judyvalue;
 	typedef unsigned long long JudySlot;
 	#define JUDY_key_mask (0x07)
@@ -80,7 +80,7 @@ typedef unsigned int uint;
 
 #else
 	//	defines for 32 bit
-	
+
 	typedef uint judyvalue;
 	typedef uint JudySlot;
 	#define JUDY_key_mask (0x03)
@@ -329,7 +329,7 @@ void judy_free (Judy *judy, void *block, int type)
 	judy->reuse[type] = (void **)block;
 	return;
 }
-		
+
 //	assemble key from current path
 
 uint judy_key (Judy *judy, uchar *buff, uint max)
@@ -479,7 +479,7 @@ uchar *base;
 			while( slot-- ) {
 				test = *(judyvalue *)(base + slot * keysize);
 #if BYTE_ORDER == BIG_ENDIAN
-				test >>= 8 * (JUDY_key_size - keysize); 
+				test >>= 8 * (JUDY_key_size - keysize);
 #else
 				test &= JudyMask[keysize];
 #endif
@@ -663,7 +663,7 @@ uchar *base;
 		node[-(newcnt - idx)] = oldnode[-(start + cnt - idx)];
 	}
 }
-			
+
 //	decompose full node to radix nodes
 
 void judy_splitnode (Judy *judy, JudySlot *next, uint size, uint keysize, uint depth)
@@ -920,7 +920,7 @@ uint off;
 
 			if( judy->depth )
 			  if( !((off+1) & JUDY_key_mask) )
-				depth++; 
+				depth++;
 
 			while( ++slot < 256 )
 			  if( (inner = (JudySlot *)(table[slot >> 4] & JUDY_mask)) ) {
@@ -956,7 +956,7 @@ uint off;
 
 	if( !judy->level )
 		return judy_last (judy, *judy->root, 0, 0);
-	
+
 	while( judy->level ) {
 		next = judy->stack[judy->level].next;
 		slot = judy->stack[judy->level].slot;
@@ -1205,7 +1205,7 @@ uchar *base;
 			while( slot-- ) {
 				test = *(judyvalue *)(base + slot * keysize);
 #if BYTE_ORDER == BIG_ENDIAN
-				test >>= 8 * (JUDY_key_size - keysize); 
+				test >>= 8 * (JUDY_key_size - keysize);
 #else
 				test &= JudyMask[keysize];
 #endif
@@ -1271,7 +1271,7 @@ uchar *base;
 			if( judy->depth )
 				depth--;
 			continue;
-		
+
 		case JUDY_radix:
 			table = (JudySlot *)(*next & JUDY_mask); // outer radix
 

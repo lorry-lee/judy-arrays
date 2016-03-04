@@ -11,9 +11,9 @@ typedef unsigned int uint;
 	defined(__sparc64__) || \
 	defined(__arch64__) || \
 	defined(__powerpc64__) || \
-	defined (__s390x__) 
+	defined (__s390x__)
 	//	defines for 64 bit
-	
+
 	typedef unsigned long long judyvalue;
 	typedef unsigned long long JudySlot;
 	#define JUDY_key_mask (0x07)
@@ -27,7 +27,7 @@ typedef unsigned int uint;
 
 #else
 	//	defines for 32 bit
-	
+
 	typedef uint judyvalue;
 	typedef uint JudySlot;
 	#define JUDY_key_mask (0x03)
