@@ -158,7 +158,7 @@ typedef struct {
 //		call with max key size
 //		and Integer tree depth.
 
-void *judy_open (uint max, uint depth)
+Judy *judy_open (uint max, uint depth)
 {
 JudySeg *seg;
 Judy *judy;

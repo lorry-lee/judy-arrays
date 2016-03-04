@@ -64,7 +64,7 @@ typedef struct {
 
 //	functions:
 //	judy_open:	open a new judy array returning a judy object.
-void *judy_open (uint max, uint depth);
+Judy *judy_open (uint max, uint depth);
 //	judy_close:	close an open judy array, freeing all memory.
 void judy_close (Judy *judy);
 //	judy_clone:	clone an open judy array, duplicating the stack.
