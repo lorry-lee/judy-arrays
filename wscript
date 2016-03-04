@@ -1,5 +1,7 @@
 # -*- python -*-
 
+import os
+
 APPNAME = 'judy'
 VERSION = '1.0'
 
@@ -17,10 +19,28 @@ def build(bld):
         'cflags'        : ['-O2', '-Wall', '-Wextra'],
         'dflags'        : ['-g'],
     }
+    source = bld.path.ant_glob('src/*.c', excl=['**/test_*.c'])
+
     features = {
-        'source'        : bld.path.ant_glob('src/*.c'),
-        'target'        : 'judy',
+        'source'        : source,
+        'target'        : 'sh-judy',
     }
     features.update(flags)
     bld.shlib(**features)
+
+    features = {
+        'source'        : source,
+        'target'        : 'st-judy',
+    }
+    features.update(flags)
     bld.stlib(**features)
+
+    for test in bld.path.ant_glob('src/test_*.c'):
+        features = {
+            'source'        : [test],
+            'target'        : os.path.splitext(str(test))[0],
+            'use'           : 'st-judy',
+            'lib'         : ['cunit', 'crypto', 'dl'],
+        }
+        features.update(flags)
+        bld.program(**features)
