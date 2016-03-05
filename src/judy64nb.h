@@ -1,6 +1,8 @@
 #ifndef JUDY64NB_H
 #define JUDY64NB_H
 
+#include <stdint.h>
+
 typedef unsigned char uchar;
 typedef unsigned int uint;
 
@@ -14,8 +16,9 @@ typedef unsigned int uint;
     defined (__s390x__)
 //  defines for 64 bit
 
-typedef unsigned long long judyvalue;
-typedef unsigned long long JudySlot;
+typedef uint64_t judyvalue;
+typedef uint64_t JudySlot;
+
  #    define JUDY_key_mask (0x07)
  #    define JUDY_key_size 8
  #    define JUDY_slot_size 8
@@ -28,8 +31,9 @@ typedef unsigned long long JudySlot;
 #else
 //  defines for 32 bit
 
-typedef uint judyvalue;
-typedef uint JudySlot;
+typedef uint32_t judyvalue;
+typedef uint32_t JudySlot;
+
  #    define JUDY_key_mask (0x03)
  #    define JUDY_key_size 4
  #    define JUDY_slot_size 4

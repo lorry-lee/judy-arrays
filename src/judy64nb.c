@@ -103,6 +103,8 @@ Judy *judy_open(uint max, uint depth) {
     Judy *judy;
     uint amt;
 
+    assert(sizeof(JudySlot) == JUDY_key_size);
+
     if (depth)
         max = JUDY_key_size * depth;
     else
