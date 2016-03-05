@@ -1351,3 +1351,33 @@ JudySlot *judy_cell(Judy *judy, uchar *buff, uint max) {
 
     return next;
 }
+
+Judy *judy_open_bin(uint size) {
+    Judy *judy;
+    uint depth;
+
+    depth = size / JUDY_key_size;
+    if (0 == depth || size % JUDY_key_size)
+        return NULL;
+    judy = judy_open(0, depth);
+    if (judy)
+        judy->ksize = size;
+
+    return judy;
+}
+
+JudySlot *judy_cell_bin(Judy *judy, void *key) {
+    return judy_cell(judy, key, judy->ksize);
+}
+
+JudySlot *judy_strt_bin(Judy *judy, void *key) {
+    return judy_strt(judy, key, judy->ksize);
+}
+
+JudySlot *judy_slot_bin(Judy *judy, void *key) {
+    return judy_slot(judy, key, judy->ksize);
+}
+
+bool judy_key_bin(Judy *judy, void *key) {
+    return judy_key(judy, key, judy->ksize) == judy->ksize;
+}

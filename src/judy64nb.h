@@ -1,6 +1,7 @@
 #ifndef JUDY64NB_H
 #define JUDY64NB_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef unsigned char uchar;
@@ -63,6 +64,7 @@ typedef struct {
     uint        level;          // current height of stack
     uint        max;            // max height of stack
     uint        depth;          // number of Integers in a key, or zero for string keys
+    uint        ksize;          // size of a binary key
     JudyStack   stack[1];       // current cursor
 } Judy;
 
@@ -91,5 +93,18 @@ JudySlot *judy_nxt(Judy *judy);
 JudySlot *judy_prv(Judy *judy);
 //  judy_del:   delete the key and cell for the current stack entry.
 JudySlot *judy_del(Judy *judy);
+
+// Helpers for binary keys
+
+//  judy_open:  open a new judy array returning a judy object for binary keys.
+Judy *judy_open_bin(uint ksize);
+//  judy_cell:  insert a key into the judy array, return cell pointer.
+JudySlot *judy_cell_bin(Judy *judy, void *key);
+//  judy_strt:  retrieve the cell pointer greater than or equal to given key
+JudySlot *judy_strt_bin(Judy *judy, void *key);
+//  judy_slot:  retrieve the cell pointer, or return NULL for a given key.
+JudySlot *judy_slot_bin(Judy *judy, void *key);
+//  judy_key:   retrieve the string value for the most recent judy query.
+bool judy_key_bin(Judy *judy, void *key);
 
 #endif /* JUDY64NB_H */
