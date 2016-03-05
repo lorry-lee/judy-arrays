@@ -1,32 +1,32 @@
-//	Judy arrays	23 NOV 2012
+//  Judy arrays 23 NOV 2012
 
-//	Author Karl Malbrain, malbrain@yahoo.com
-//	with assistance from Jan Weiss.
+//  Author Karl Malbrain, malbrain@yahoo.com
+//  with assistance from Jan Weiss.
 
-//	Simplified judy arrays for strings and integers
-//	Adapted from the ideas of Douglas Baskins of HP.
+//  Simplified judy arrays for strings and integers
+//  Adapted from the ideas of Douglas Baskins of HP.
 
-//	Map a set of keys to corresponding memory cells (uints).
-//	Each cell must be set to a non-zero value by the caller.
+//  Map a set of keys to corresponding memory cells (uints).
+//  Each cell must be set to a non-zero value by the caller.
 
-//	String mappings are denoted by calling judy_open with zero as
-//	the second argument.  Integer mappings are denoted by calling
-//	judy_open with the Integer depth of the Judy Trie as the second
-//	argument.
+//  String mappings are denoted by calling judy_open with zero as
+//  the second argument.  Integer mappings are denoted by calling
+//  judy_open with the Integer depth of the Judy Trie as the second
+//  argument.
 
-//	functions:
-//	judy_open:	open a new judy array returning a judy object.
-//	judy_close:	close an open judy array, freeing all memory.
-//	judy_clone:	clone an open judy array, duplicating the stack.
-//	judy_data:	allocate data memory within judy array for external use.
-//	judy_cell:	insert a string into the judy array, return cell pointer.
-//	judy_strt:	retrieve the cell pointer greater than or equal to given key
-//	judy_slot:	retrieve the cell pointer, or return NULL for a given key.
-//	judy_key:	retrieve the string value for the most recent judy query.
-//	judy_end:	retrieve the cell pointer for the last string in the array.
-//	judy_nxt:	retrieve the cell pointer for the next string in the array.
-//	judy_prv:	retrieve the cell pointer for the prev string in the array.
-//	judy_del:	delete the key and cell for the current stack entry.
+//  functions:
+//  judy_open:  open a new judy array returning a judy object.
+//  judy_close: close an open judy array, freeing all memory.
+//  judy_clone: clone an open judy array, duplicating the stack.
+//  judy_data:  allocate data memory within judy array for external use.
+//  judy_cell:  insert a string into the judy array, return cell pointer.
+//  judy_strt:  retrieve the cell pointer greater than or equal to given key
+//  judy_slot:  retrieve the cell pointer, or return NULL for a given key.
+//  judy_key:   retrieve the string value for the most recent judy query.
+//  judy_end:   retrieve the cell pointer for the last string in the array.
+//  judy_nxt:   retrieve the cell pointer for the next string in the array.
+//  judy_prv:   retrieve the cell pointer for the prev string in the array.
+//  judy_del:   delete the key and cell for the current stack entry.
 
 #include <stdlib.h>
 #include <string.h>
@@ -57,8 +57,8 @@
 
 #define JUDY_mask (~(JudySlot)0x07)
 
-//	define the alignment factor for judy nodes and allocations
-//	to enable this feature, set to 64
+//  define the alignment factor for judy nodes and allocations
+//  to enable this feature, set to 64
 
 #define JUDY_cache_line 8               // minimum size is 8 bytes
 #define JUDY_seg    65536
@@ -94,9 +94,9 @@ judyvalue JudyMask[9] = {
 
 #define JUDY_max    JUDY_32
 
-//	open judy object
-//		call with max key size
-//		and Integer tree depth.
+//  open judy object
+//      call with max key size
+//      and Integer tree depth.
 
 Judy *judy_open(uint max, uint depth) {
     JudySeg *seg;
@@ -138,7 +138,7 @@ void judy_close(Judy *judy) {
         nxt = seg->seg, free(seg);
 }
 
-//	allocate judy node
+//  allocate judy node
 
 void *judy_alloc(Judy *judy, uint type) {
     uint amt, idx, min;
@@ -160,7 +160,7 @@ void *judy_alloc(Judy *judy, uint type) {
     if (amt & 0x07)
         amt |= 0x07, amt += 1;
 
-    //	see if free block is already available
+    //  see if free block is already available
 
     if ((block = judy->reuse[type])) {
         judy->reuse[type] = *block;
@@ -168,8 +168,8 @@ void *judy_alloc(Judy *judy, uint type) {
         return (void *)block;
     }
 
-    //	break down available larger block
-    //	for reuse into smaller blocks
+    //  break down available larger block
+    //  for reuse into smaller blocks
 
     if (type >= JUDY_1)
         for (idx = type; idx++ < JUDY_max; )
@@ -196,8 +196,8 @@ void *judy_alloc(Judy *judy, uint type) {
         }
     }
 
-    //	generate additional free blocks
-    //	to fill up to cache line size
+    //  generate additional free blocks
+    //  to fill up to cache line size
 
     rtn = (void * *)((uchar *)judy->seg + judy->seg->next - amt);
 
@@ -263,7 +263,7 @@ void judy_free(Judy *judy, void *block, int type) {
     return;
 }
 
-//	assemble key from current path
+//  assemble key from current path
 
 uint judy_key(Judy *judy, uchar *buff, uint max) {
     judyvalue *dest = (judyvalue *)buff;
@@ -355,7 +355,7 @@ uint judy_key(Judy *judy, uchar *buff, uint max) {
     return len;
 }
 
-//	find slot & setup cursor
+//  find slot & setup cursor
 
 JudySlot *judy_slot(Judy *judy, uchar *buff, uint max) {
     judyvalue *src = (judyvalue *)buff;
@@ -438,7 +438,7 @@ JudySlot *judy_slot(Judy *judy, uchar *buff, uint max) {
                     slot = buff[off++];
                 else
                     slot = 0;
-                //	put radix slot on judy stack
+                //  put radix slot on judy stack
 
                 judy->stack[judy->level].slot = slot;
                 if ((next = table[slot >> 4]))
@@ -482,7 +482,7 @@ JudySlot *judy_slot(Judy *judy, uchar *buff, uint max) {
     return NULL;
 }
 
-//	promote full nodes to next larger size
+//  promote full nodes to next larger size
 
 JudySlot *judy_promote(Judy *judy, JudySlot *next, int idx, judyvalue value, int keysize) {
     uchar *base = (uchar *)(*next & JUDY_mask);
@@ -506,14 +506,14 @@ JudySlot *judy_promote(Judy *judy, JudySlot *next, int idx, judyvalue value, int
     newnode = (JudySlot *)(newbase + JudySize[type]);
     *next = (JudySlot)newbase | type;
 
-    //	open up slot at idx
+    //  open up slot at idx
 
     memcpy(newbase + (newcnt - oldcnt - 1) * keysize, base, idx * keysize);                                 // copy keys
 
     for (slot = 0; slot < idx; slot++)
         newnode[-(slot + newcnt - oldcnt)] = node[-(slot + 1)];                                             // copy ptr
 
-    //	fill in new node
+    //  fill in new node
 
 #if BYTE_ORDER != BIG_ENDIAN
     memcpy(newbase + (idx + newcnt - oldcnt - 1) * keysize, &value, keysize);                               // copy key
@@ -525,7 +525,7 @@ JudySlot *judy_promote(Judy *judy, JudySlot *next, int idx, judyvalue value, int
 #endif
     result = &newnode[-(idx + newcnt - oldcnt)];
 
-    //	copy rest of old node
+    //  copy rest of old node
 
     memcpy(newbase + (idx + newcnt - oldcnt) * keysize, base + (idx * keysize), (oldcnt - slot) * keysize); // copy keys
 
@@ -538,9 +538,9 @@ JudySlot *judy_promote(Judy *judy, JudySlot *next, int idx, judyvalue value, int
     return result;
 }
 
-//	construct new node for JUDY_radix entry
-//	make node with slot - start entries
-//	moving key over one offset
+//  construct new node for JUDY_radix entry
+//  make node with slot - start entries
+//  moving key over one offset
 
 void judy_radix(Judy *judy, JudySlot *radix, uchar *old, int start, int slot, int keysize, uchar key, uint depth) {
     int size, idx, cnt = slot - start, newcnt;
@@ -549,7 +549,7 @@ void judy_radix(Judy *judy, JudySlot *radix, uchar *old, int start, int slot, in
     JudySlot *table;
     uchar *base;
 
-    //	if necessary, setup inner radix node
+    //  if necessary, setup inner radix node
 
     if (!(table = (JudySlot *)(radix[key >> 4] & JUDY_mask))) {
         table = judy_alloc(judy, JUDY_radix);
@@ -565,7 +565,7 @@ void judy_radix(Judy *judy, JudySlot *radix, uchar *old, int start, int slot, in
         return;
     }
 
-    //	calculate new node big enough to contain slots
+    //  calculate new node big enough to contain slots
 
     do {
         type++;
@@ -573,14 +573,14 @@ void judy_radix(Judy *judy, JudySlot *radix, uchar *old, int start, int slot, in
         newcnt = size / (sizeof(JudySlot) + keysize);
     } while (cnt > newcnt && type < JUDY_max);
 
-    //	store new node pointer in inner table
+    //  store new node pointer in inner table
 
     base = judy_alloc(judy, type);
     node = (JudySlot *)(base + size);
     table[key & 0x0F] = (JudySlot)base | type;
 
-    //	allocate node and copy old contents
-    //	shorten keys by 1 byte during copy
+    //  allocate node and copy old contents
+    //  shorten keys by 1 byte during copy
 
     for (idx = 0; idx < cnt; idx++) {
 #if BYTE_ORDER != BIG_ENDIAN
@@ -592,7 +592,7 @@ void judy_radix(Judy *judy, JudySlot *radix, uchar *old, int start, int slot, in
     }
 }
 
-//	decompose full node to radix nodes
+//  decompose full node to radix nodes
 
 void judy_splitnode(Judy *judy, JudySlot *next, uint size, uint keysize, uint depth) {
     int cnt, slot, start = 0;
@@ -603,7 +603,7 @@ void judy_splitnode(Judy *judy, JudySlot *next, uint size, uint keysize, uint de
     base = (uchar  *)(*next & JUDY_mask);
     cnt = size / (sizeof(JudySlot) + keysize);
 
-    //	allocate outer judy_radix node
+    //  allocate outer judy_radix node
 
     newradix = judy_alloc(judy, JUDY_radix);
     *next = (JudySlot)newradix | JUDY_radix;
@@ -620,7 +620,7 @@ void judy_splitnode(Judy *judy, JudySlot *next, uint size, uint keysize, uint de
         if (nxt == key)
             continue;
 
-        //	decompose portion of old node into radix nodes
+        //  decompose portion of old node into radix nodes
 
         judy_radix(judy, newradix, base, start, slot, keysize - 1, (uchar)key, depth);
         start = slot;
@@ -631,7 +631,7 @@ void judy_splitnode(Judy *judy, JudySlot *next, uint size, uint keysize, uint de
     judy_free(judy, (void * *)base, JUDY_max);
 }
 
-//	return first leaf
+//  return first leaf
 
 JudySlot *judy_first(Judy *judy, JudySlot next, uint off, uint depth) {
     JudySlot *table, *inner;
@@ -711,7 +711,7 @@ JudySlot *judy_first(Judy *judy, JudySlot next, uint off, uint depth) {
     return NULL;
 }
 
-//	return last leaf cell pointer
+//  return last leaf cell pointer
 
 JudySlot *judy_last(Judy *judy, JudySlot next, uint off, uint depth) {
     JudySlot *table, *inner;
@@ -787,12 +787,12 @@ JudySlot *judy_last(Judy *judy, JudySlot next, uint off, uint depth) {
     return NULL;
 }
 
-//	judy_end: return last entry
+//  judy_end: return last entry
 
 JudySlot *judy_end(Judy *judy) {
     judy->level = 0;
     return judy_last(judy, *judy->root, 0, 0);
-} //	judy_nxt: return next entry
+} //    judy_nxt: return next entry
 
 JudySlot *judy_nxt(Judy *judy) {
     JudySlot *table, *inner;
@@ -871,7 +871,7 @@ JudySlot *judy_nxt(Judy *judy) {
     return NULL;
 }
 
-//	judy_prv: return ptr to previous entry
+//  judy_prv: return ptr to previous entry
 
 JudySlot *judy_prv(Judy *judy) {
     int slot, size, keysize;
@@ -945,8 +945,8 @@ JudySlot *judy_prv(Judy *judy) {
     return NULL;
 }
 
-//	judy_del: delete string from judy array
-//		returning previous entry.
+//  judy_del: delete string from judy array
+//      returning previous entry.
 
 JudySlot *judy_del(Judy *judy) {
     int slot, off, size, type;
@@ -973,7 +973,7 @@ JudySlot *judy_del(Judy *judy) {
                 node = (JudySlot *)((next & JUDY_mask) + size);
                 base = (uchar *)(next & JUDY_mask);
 
-                //	move deleted slot to first slot
+                //  move deleted slot to first slot
 
                 while (slot) {
                     node[-slot - 1] = node[-slot];
@@ -981,7 +981,7 @@ JudySlot *judy_del(Judy *judy) {
                     slot--;
                 }
 
-                //	zero out first slot
+                //  zero out first slot
 
                 node[-1] = 0;
                 memset(base, 0, keysize);
@@ -1023,13 +1023,13 @@ JudySlot *judy_del(Judy *judy) {
         }
     }
 
-    //	tree is now empty
+    //  tree is now empty
 
     *judy->root = 0;
     return NULL;
 }
 
-//	return cell for first key greater than or equal to given key
+//  return cell for first key greater than or equal to given key
 
 JudySlot *judy_strt(Judy *judy, uchar *buff, uint max) {
     JudySlot *cell;
@@ -1045,7 +1045,7 @@ JudySlot *judy_strt(Judy *judy, uchar *buff, uint max) {
     return judy_nxt(judy);
 }
 
-//	split open span node
+//  split open span node
 
 void judy_splitspan(Judy *judy, JudySlot *next, uchar *base) {
     JudySlot *node = (JudySlot *)(base + JudySize[JUDY_span]);
@@ -1078,7 +1078,7 @@ void judy_splitspan(Judy *judy, JudySlot *next, uchar *base) {
     judy_free(judy, base, JUDY_span);
 }
 
-//	judy_cell: add string to judy array
+//  judy_cell: add string to judy array
 
 JudySlot *judy_cell(Judy *judy, uchar *buff, uint max) {
     judyvalue *src = (judyvalue *)buff;
@@ -1149,8 +1149,8 @@ JudySlot *judy_cell(Judy *judy, uchar *buff, uint max) {
                     continue;
                 }
 
-                //	if this node is not full
-                //	open up cell after slot
+                //  if this node is not full
+                //  open up cell after slot
 
                 if (!node[-1]) {
                     memmove(base, base + keysize, slot * keysize);  // move keys less than new key down one slot
@@ -1186,7 +1186,7 @@ JudySlot *judy_cell(Judy *judy, uchar *buff, uint max) {
                     continue;
                 }
 
-                //	split full maximal node into JUDY_radix nodes
+                //  split full maximal node into JUDY_radix nodes
                 //  loop to reprocess new insert
 
                 judy_splitnode(judy, next, size, keysize, depth);
@@ -1245,8 +1245,8 @@ JudySlot *judy_cell(Judy *judy, uchar *buff, uint max) {
                     continue;
                 }
 
-                //	bust up JUDY_span node and produce JUDY_1 nodes
-                //	then loop to reprocess insert
+                //  bust up JUDY_span node and produce JUDY_1 nodes
+                //  then loop to reprocess insert
 
                 judy_splitspan(judy, next, base);
                 judy->level--;
@@ -1263,7 +1263,7 @@ JudySlot *judy_cell(Judy *judy, uchar *buff, uint max) {
             node = (JudySlot  *)(base + JudySize[JUDY_1]);
             *next = (JudySlot)base | JUDY_1;
 
-            //	fill in slot 0 with bytes of key
+            //  fill in slot 0 with bytes of key
 
             if (judy->depth) {
                 value = src[depth];
@@ -1301,7 +1301,7 @@ JudySlot *judy_cell(Judy *judy, uchar *buff, uint max) {
             off++;
         }
 
-    //	produce span nodes to consume rest of key
+    //  produce span nodes to consume rest of key
     //  or judy_1 nodes if not string tree
 
     if (!judy->depth)
@@ -1332,7 +1332,7 @@ JudySlot *judy_cell(Judy *judy, uchar *buff, uint max) {
             node = (JudySlot  *)(base + JudySize[JUDY_1]);
             *next = (JudySlot)base | JUDY_1;
 
-            //	fill in slot 0 with bytes of key
+            //  fill in slot 0 with bytes of key
 
             *(judyvalue *)base = src[depth];
 
