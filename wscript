@@ -17,7 +17,7 @@ def options(opt):
 
 def build(bld):
     flags = {
-        'cflags'        : ['-O2', '-Wall', '-Wextra'],
+        'cflags'        : ['-O2', '-Wall', '-Wextra', '-std=c11', '-Wpedantic'],
     }
     if bld.options.mode == 'debug':
         flags['cflags'] += ['-g', '-O0']
