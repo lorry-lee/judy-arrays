@@ -13,12 +13,14 @@ def configure(conf):
 
 def options(opt):
     opt.load('compiler_c')
+    opt.add_option('--mode', action='store', default='release', help='Compile mode: release or debug')
 
 def build(bld):
     flags = {
         'cflags'        : ['-O2', '-Wall', '-Wextra'],
-        'dflags'        : ['-g'],
     }
+    if bld.options.mode == 'debug':
+        flags['cflags'] += ['-g', '-O0']
     source = bld.path.ant_glob('src/*.c', excl=['**/test_*.c'])
 
     features = {
