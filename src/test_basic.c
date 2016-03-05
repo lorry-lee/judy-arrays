@@ -1,5 +1,6 @@
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
+
 #include <stdlib.h>
 #include <time.h>
 #include <openssl/sha.h>
@@ -123,6 +124,9 @@ void test_fill_binkeys(void) {
         slot = judy_slot_bin(j, keys[idx].data);
         CU_ASSERT_PTR_NULL_FATAL(slot);
     }
+
+    free(keys);
+    free(seen);
 
     judy_close(j);
 }
