@@ -68,6 +68,10 @@ typedef struct {
     JudyStack   stack[1];       // current cursor
 } Judy;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //  functions:
 //  judy_open:  open a new judy array returning a judy object.
 Judy *judy_open(uint max, uint depth);
@@ -106,5 +110,9 @@ JudySlot *judy_strt_bin(Judy *judy, void *key);
 JudySlot *judy_slot_bin(Judy *judy, void *key);
 //  judy_key:   retrieve the string value for the most recent judy query.
 bool judy_key_bin(Judy *judy, void *key);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* JUDY64NB_H */
